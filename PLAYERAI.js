@@ -7,16 +7,21 @@ var hasMoved;                   // checks whether you have already moved
 var path;                  // list containing movements that were path
 var move;   
 var enemyArea;
-var hazards;
+var hazards;  // a list of all enemy models. each enemy has an area that covers a set amount of boxes in front of it. hazards[#ofenemies][x-coordofarea][y-coordofarea]
 var direct = [[0,-1],[0,1],[-1,0],[1,0]];  
-var cur;
+var cur; //stores the current position of the player (in Thinking()), 
 var prev;  
 var next;   
 var enemyPos;           
-var go;
-var delay;  
-var done;
-var process; // the current decision of the bot
+var go;  //some value, not sure where this is derived from.
+var delay;  //some value, not sure where this is derived from.
+var done;  //apparently a boolean
+var process; // the current decision of the bot, the higher this goes, the 'smarter' the bot will be. But increasing this also increases loading times.
+
+//Other functions not stated here:
+// var player; an array (?) that stores the player's current X position on the first element and stores the player's Y position on the second element. Has the methods getX(), getY().
+
+
 
 
 // Base functions
@@ -24,7 +29,7 @@ var process; // the current decision of the bot
 // This function is run during the game loop repeatedly.
 function THINK(player,enemies,maplayout,end)
 {		
-		if(process>50){
+		if(process>100){ 
 			if(go>delay){
 				if(done){
 					hazards=genHazards(enemies, enemyArea);
@@ -46,7 +51,7 @@ function initAI (player,enemies,maplayout,end)
 {
 
 		go=0;
-		delay =random(4,11);
+		delay = random(4,11);
 		process=0;
 		done = false
 		enemyArea=new Array(enemies.length);
@@ -204,11 +209,11 @@ function computeG(parent, child){
 	if(isHazardous(child))
 		return parent.getG()+1000;
 	else
-		return parent.getG()+10;
+		return parent.getG();  // +10;
 }
 
 function computeH(point, end){
-	return (Math.abs(point[0]-end[0])+Math.abs(point[1]-end[1]))*10;
+	return (Math.abs(point[0]-end[0])+Math.abs(point[1]-end[1]));  // *10;
 }
 
 function computeF(g, h){
