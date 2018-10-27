@@ -17,6 +17,7 @@ var go;  //some value, not sure where this is derived from.
 var delay;  //some value, not sure where this is derived from.
 var done;  //apparently a boolean
 var process; // the current decision of the bot, the higher this goes, the 'smarter' the bot will be. But increasing this also increases loading times.
+var enemyPatterns; //stores the all of the enemies' current x coordinate, y coordinate, and where they are facing in a certain process rotation. The basis for the patterns would be the process number. E.g. Enemy 1 faces right and is at [1,2] at process number 5, 10, 15, 20,...
 
 //Other functions not stated here:
 // var player; an array (?) that stores the player's current X position on the first element and stores the player's Y position on the second element. Has the methods getX(), getY().
@@ -27,13 +28,14 @@ var process; // the current decision of the bot, the higher this goes, the 'smar
 // Base functions
 
 // This function is run during the game loop repeatedly.
-function THINK(player,enemies,maplayout,end)
+function THINK(player,enemies, maplayout,end)
 {		
 		if(process>100){ 
 			if(go>delay){
 				if(done){
 					hazards=genHazards(enemies, enemyArea);
 					Thinking(player, enemies, maplayout, end);
+					readEnemyPatterns(player, enemies, maplayout, end, process);
 				}
 			}
 			else
@@ -45,9 +47,20 @@ function THINK(player,enemies,maplayout,end)
 		}
 }
 
+//This function stores the enemies' movement patterns. This evaluation does not include the enemies' line of sight.
+function readEnemyPatterns(player, enemies, maplayout, end, process)
+{
+
+	for(var ctr = 0; ctr < enemies.length; ctr++)
+	{
+		var details = [enemies[ctr].getX(), enemies[ctr].getY(), enemies[ctr].getFacing, process];
+		enemyPatters.push(details);
+	}
+}
+
 // This function is called before the start of each round. Use it to initialize your
 // bots intelligence!
-function initAI (player,enemies,maplayout,end)
+function initAI (player,enemies, area, maplayout,end)
 {
 
 		go=0;
@@ -82,6 +95,11 @@ function Thinking(player, enemies, maplayout, end){
 							move = i;
 							break;
 						}
+						else
+						{
+							move = 4;
+							// break;
+						}
 					}
 				}
 				
@@ -90,6 +108,7 @@ function Thinking(player, enemies, maplayout, end){
 					case 1: hasMoved = player.MoveDown(); break;
 					case 2: hasMoved = player.MoveLeft(); break;
 					case 3: hasMoved = player.MoveRight(); break;
+					case 4: hasMoved = true; break;
         		}
 				prev = cur;
 				
