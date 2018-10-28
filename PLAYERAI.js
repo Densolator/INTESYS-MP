@@ -65,7 +65,7 @@ if(process>100){
 					
 			Thinking(player, enemies, maplayout, end);
 					
-			readEnemyPatterns(player, enemies, maplayout, end, process);
+			
 	
 		}
 			
@@ -80,7 +80,9 @@ if(process>100){
 else{
 				
 	enemyArea = getEnemyArea(enemies, enemyArea);
-				
+	
+	readEnemyPatterns(player, enemies, maplayout, end, process);
+			
 	process++
 		}
 
